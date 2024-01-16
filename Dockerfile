@@ -1,4 +1,4 @@
-FROM alpine:3.12.3 as builder
+FROM alpine:3.19.0 as builder
 
 RUN apk --no-cache add \
     build-base \
@@ -10,9 +10,9 @@ RUN apk --no-cache add \
 
 WORKDIR /usr/src/telegram-bot-api
 
-COPY upstream/CMakeLists.txt .
-COPY upstream/td ./td
-COPY upstream/telegram-bot-api ./telegram-bot-api
+COPY telegram-bot-api/CMakeLists.txt .
+COPY telegram-bot-api/td ./td
+COPY telegram-bot-api/telegram-bot-api ./telegram-bot-api
 
 WORKDIR /usr/src/telegram-bot-api/build
 
@@ -20,7 +20,7 @@ RUN cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX:PATH=.. .. \
  && cmake --build . --target install -j "$(nproc)"\
  && strip /usr/src/telegram-bot-api/bin/telegram-bot-api
 
-FROM alpine:3.12.3
+FROM alpine:3.19.0
 
 RUN apk --no-cache --update add \
     libstdc++ \

@@ -19,21 +19,16 @@ jobs:
     steps:
       - name: Checkout current repo  
         uses: actions/checkout@v4
-
-      - name: Checkout upstream repo 
-        uses: actions/checkout@v4
         with:
-          repository: tdlib/telegram-bot-api
-          path: upstream
           submodules: recursive
       
       - name: Get Version
         run: |
           # get telegram bot api version
-          telegram_bot_api_version=$(cd upstream && git rev-parse --short HEAD)
+          telegram_bot_api_version=$(cd telegram-bot-api && git rev-parse --short HEAD)
           
           # get tdlib version 
-          tdlib_version=$(cd upstream/td && git rev-parse --short HEAD)
+          tdlib_version=$(cd telegram-bot-api/td && git rev-parse --short HEAD)
           
           # concat tdlib and telegram bot api version
           version=$telegram_bot_api_version-$tdlib_version
@@ -45,7 +40,7 @@ jobs:
         run: |
           docker build \
             --tag ghcr.io/heywallet/telegram-bot-api:latest \
-            --tag ghcr.io/heywallet/telegram-bot-api:$version \
+            --tag ghcr.io/heywallet/telegram-bot-api:$version-${{ github.sha }} \
             .
 
       - name: Login to registry
@@ -55,4 +50,4 @@ jobs:
       - name: Push images
         run: |
           docker push ghcr.io/heywallet/telegram-bot-api:latest
-          docker push ghcr.io/heywallet/telegram-bot-api:$version
+          docker push ghcr.io/heywallet/telegram-bot-api:$version-${{ github.sha }}
