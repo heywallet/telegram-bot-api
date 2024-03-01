@@ -4,13 +4,6 @@ on:
   push:
     branches:
       - main
-    paths:
-      - Dockerfile
-      - .dockerignore
-      - .github/workflows/docker.yml
-  repository_dispatch:
-    # this event is submited via github.com/bots-house/github-actions-upstream-watch
-    types: upstream_commit
 
 jobs:
   build:
